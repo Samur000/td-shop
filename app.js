@@ -78,10 +78,16 @@ function getProductCardTemplate(product) {
 // Удаление карточек
 function deleteProduct(id) {
   const index = myTovars.findIndex(tovar => tovar.id === id);
+  const basketIindex = basketTovars.findIndex(tovar => tovar.id === id);
   if (index !== -1) {
     myTovars.splice(index, 1);
     localStorage.setItem('tovars', JSON.stringify(myTovars));
     renderProducts();
+  }
+  if (basketIindex !== -1) {
+    basketTovars.splice(index, 1);
+    localStorage.setItem('tovars', JSON.stringify(basketTovars));
+    renderBasket();
   }
 }
 // Изменение карточек
@@ -110,6 +116,7 @@ function updateProduct(id) {
     `
     tovarId = myTovars[index].id
     modalUpdateOverlay.style.display = 'flex'
+    document.body.style.overflow = 'hidden';
   }
 }
 
