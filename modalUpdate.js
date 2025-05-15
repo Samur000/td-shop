@@ -8,6 +8,7 @@ modalUpdateOverlay.addEventListener('click', (event) => {
 
     if (event.target.dataset.inp === 'closed' || event.target.dataset.inp === 'cancel') {
         modalUpdateOverlay.style.display = 'none'
+        document.body.style.overflow = ''
     }
     if (event.target.dataset.inp === 'apply') {
         const index = myTovars.findIndex(tovar => tovar.id === tovarId);
@@ -32,6 +33,7 @@ modalUpdateOverlay.addEventListener('click', (event) => {
 
         renderProducts();
         modalUpdateOverlay.style.display = 'none'
+        document.body.style.overflow = '';
     }
 
 })
