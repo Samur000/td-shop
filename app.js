@@ -99,7 +99,6 @@ function updateProduct(id) {
     modalUpdateOverlay.innerHTML = `
       <div class="update-modal" id=${myTovars[index].id}>
             <button data-inp="closed">X</button>
-            <img src="${myTovars[index].imgUrl}" alt="">
             <label for="">ссылка на зображение</label>
             <input id="upd-url" type="text" value="${myTovars[index].imgUrl}">
             <label for="">Название товара</label>
