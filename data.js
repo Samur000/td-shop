@@ -68,6 +68,13 @@ window.tovars = [
         subtitle: '825GB SSD',
         price: '54990',
         imgUrl: 'https://gmedia.playstation.com/is/image/SIEPDC/playstation-5-digital-edition-with-dualsense-front-product-shot-01-ps5-en-30jul20?$1600px$',
+    },
+    {
+        id: '011',
+        title: 'Xiaomi Mi Robot VACUUM-MOP 2 Pro (BHR5044EU)',
+        subtitle: 'Xiaomi Робот-пылесос Mi Robot Vacuum Mop 2 Pro (ОБНОВЛЁННАЯ ВЕРСИЯ), белый. Уцененный товар',
+        price: '17691',
+        imgUrl: 'https://ir-3.ozone.ru/s3/multimedia-1-v/wc1000/7349574019.jpg, https://ir-3.ozone.ru/s3/multimedia-1-u/wc1000/7349574054.jpg, https://ir-3.ozone.ru/s3/multimedia-1-y/wc1000/7349574094.jpg, https://ir-3.ozone.ru/s3/multimedia-1-f/wc1000/7349574183.jpg',
     }
 ]
 window.basketGoods = [
