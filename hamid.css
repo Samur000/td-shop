@@ -360,7 +360,7 @@ header {
         padding: 8px;
     }
 
-    .img{
+    .img {
         height: 100px;
         margin-bottom: 0px;
     }
@@ -605,6 +605,14 @@ header {
 
     .modal-tovar img {
         height: 200px;
+    }
+    .add-card {
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    .add-card input {
+        width: 300px;
     }
 }
 
