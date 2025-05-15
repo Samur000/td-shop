@@ -315,7 +315,7 @@ header {
 .modal-footer {
     padding: 20px;
     border-top: 1px solid #eee;
-    position: fixed;
+    position: sticky;
     width: 500px;
     bottom: 0;
     z-index: 999;
@@ -377,6 +377,10 @@ header {
 
     .price {
         font-size: 14px;
+    }
+
+    .modal-body {
+        padding-bottom: 200px;
     }
 }
 
@@ -606,6 +610,7 @@ header {
     .modal-tovar img {
         height: 200px;
     }
+
     .add-card {
         width: 80%;
         margin: 0 auto;
