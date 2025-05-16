@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../hamid.css">
+    <title>Просмотр товара</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo">TD SHOP</div>
+        </div>
+        <div class="basket">
+            <button id="basket-btn">
+                <img src="https://cdn-icons-png.flaticon.com/512/1374/1374128.png" alt="Корзина">
+                <span class="basket-counter">0</span>
+            </button>
+        </div>
+    </header>
+    <div class="modal-tovar">
+        <!-- Содержимое будет заполнено через JS -->
+    </div>
+    
+
+    <script src="../data.js"></script>
+    <script>
+        // Загружаем товары из Local Storage или используем данные по умолчанию
+        window.myTovars = JSON.parse(localStorage.getItem('tovars')) || [...window.tovars];
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (!productId) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Находим товар в данных
+            const product = window.myTovars.find(item => item.id === productId);
+
+            if (!product) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Функция для отображения товара
+            const renderProduct = () => {
+                const modalBody = document.querySelector('.modal-tovar');
+                const imgUrls = product.imgUrl.split(",");
+
+                modalBody.innerHTML = `
+                    <button class="btn-close" onclick="window.history.back()">X</button>
+                    <div class="slider-container">
+                        <div class="slider">
+                            ${imgUrls.map(url => `<img src="${url}" alt="${product.title}" class="slide">`).join('')}
+                        </div>
+                        ${imgUrls.length > 1 ? `
+                            <button class="slider-prev">❮</button>
+                            <button class="slider-next">❯</button>
+                            <div class="slider-dots">
+                                ${imgUrls.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="title">${product.title}</div>
+                    <div class="subtitle">${product.subtitle}</div>
+                    <div class="price">${product.price} ₽</div>
+                    <button class="basket-btn" onclick="addToBasket('${product.id}')">Добавить в корзину</button>
+                    
+                    <div class="reviews-section">
+                        <div class="reviews-title">Отзывы</div>
+                        <div class="reviews-container">
+                            ${product.reviews && product.reviews.length > 0 ?
+                        product.reviews.map(review => `
+                                    <div class="review-item">
+                                        <div class="review-header">
+                                            <span class="review-author">${review.author || 'Аноним'}</span>
+                                            <span class="review-date">${review.date || new Date().toLocaleDateString()}</span>
+                                        </div>
+                                        <div class="star-rating">
+                                            ${Array(5).fill('').map((_, i) =>
+                            `<span class="star ${i < review.rating ? 'filled' : ''}">★</span>`
+                        ).join('')}
+                                        </div>
+                                        <div class="review-text">${review.text}</div>
+                                    </div>
+                                `).join('') :
+                        '<div class="no-reviews">Пока нет отзывов. Будьте первым!</div>'
+                    }
+                        </div>
+                        
+                        <div class="add-review">
+                            <div class="add-review-title">Оставить отзыв</div>
+                            <form class="review-form">
+                                <div class="star-rating" id="rating-input">
+                                    ${Array(5).fill('').map((_, i) =>
+                        `<span class="star" data-rating="${i + 1}">★</span>`
+                    ).join('')}
+                                </div>
+                                <textarea placeholder="Ваш отзыв..." required></textarea>
+                                <button type="submit" class="submit-review">Отправить отзыв</button>
+                            </form>
+                        </div>
+                    </div>
+                `;
+
+                // Инициализация слайдера
+                if (imgUrls.length > 1) {
+                    const slider = document.querySelector('.slider');
+                    const slides = document.querySelectorAll('.slide');
+                    const prevBtn = document.querySelector('.slider-prev');
+                    const nextBtn = document.querySelector('.slider-next');
+                    const dots = document.querySelectorAll('.dot');
+
+                    let currentSlide = 0;
+
+                    const updateSlider = () => {
+                        slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+                        dots.forEach((dot, i) => {
+                            dot.classList.toggle('active', i === currentSlide);
+                        });
+                    };
+
+                    nextBtn.addEventListener('click', () => {
+                        currentSlide = (currentSlide + 1) % slides.length;
+                        updateSlider();
+                    });
+
+                    prevBtn.addEventListener('click', () => {
+                        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                        updateSlider();
+                    });
+
+                    dots.forEach((dot, i) => {
+                        dot.addEventListener('click', () => {
+                            currentSlide = i;
+                            updateSlider();
+                        });
+                    });
+                }
+
+                // Обработчик кликов по звездам
+                document.addEventListener('click', function (e) {
+                    if (e.target.classList.contains('star') && e.target.closest('#rating-input')) {
+                        const stars = e.target.parentElement.querySelectorAll('.star');
+                        const rating = parseInt(e.target.getAttribute('data-rating'));
+
+                        stars.forEach((star, i) => {
+                            if (i < rating) {
+                                star.classList.add('filled');
+                            } else {
+                                star.classList.remove('filled');
+                            }
+                        });
+                    }
+                });
+
+                // Обработчик отправки формы отзыва
+                document.addEventListener('submit', function (e) {
+                    if (e.target.classList.contains('review-form')) {
+                        e.preventDefault();
+
+                        const form = e.target;
+                        const rating = form.querySelectorAll('.star.filled').length;
+                        const text = form.querySelector('textarea').value.trim();
+
+                        if (rating === 0) {
+                            alert('Пожалуйста, поставьте оценку');
+                            return;
+                        }
+
+                        if (!text) {
+                            alert('Пожалуйста, напишите отзыв');
+                            return;
+                        }
+
+                        // Находим индекс товара в массиве
+                        const index = window.myTovars.findIndex(tovar => tovar.id === productId);
+                        
+                        // Добавляем новый отзыв
+                        const newReview = {
+                            author: "Вы",
+                            date: new Date().toLocaleDateString(),
+                            rating: rating,
+                            text: text
+                        };
+                        
+                        // Обновляем отзывы товара
+                        if (!window.myTovars[index].reviews) {
+                            window.myTovars[index].reviews = [];
+                        }
+                        window.myTovars[index].reviews.unshift(newReview);
+                        
+                        // Сохраняем в Local Storage
+                        localStorage.setItem('tovars', JSON.stringify(window.myTovars));
+                        
+                        // Обновляем текущий продукт
+                        product.reviews = window.myTovars[index].reviews;
+                        
+                        // Перерисовываем страницу
+                        renderProduct();
+                        
+                        alert('Спасибо за ваш отзыв!');
+                    }
+                });
+            };
+
+            // Первоначальная отрисовка
+            renderProduct();
+        });
+
+        function addToBasket(productId) {
+            // Получаем текущую корзину из Local Storage
+            let basket = JSON.parse(localStorage.getItem('basket')) || [];
+            
+            // Проверяем, есть ли уже этот товар в корзине
+            const existingItem = basket.find(item => item.id === productId);
+            
+            if (existingItem) {
+                // Увеличиваем количество, если товар уже есть
+                existingItem.quantity = (existingItem.quantity || 1) + 1;
+            } else {
+                // Добавляем новый товар
+                const product = window.myTovars.find(item => item.id === productId);
+                if (product) {
+                    basket.push({
+                        id: productId,
+                        title: product.title,
+                        price: product.price,
+                        quantity: 1
+                    });
+                }
+            }
+            
+            // Сохраняем обновленную корзину
+            localStorage.setItem('basket', JSON.stringify(basket));
+            
+            // Можно добавить уведомление для пользователя
+            alert('Товар добавлен в корзину!');
+            
+            // Обновляем данные на странице (если нужно)
+            window.myTovars = JSON.parse(localStorage.getItem('tovars')) || [...window.tovars];
+        }
+    </script>
+</body>
+</html>
