@@ -953,3 +953,16 @@ button.btn-close:hover {
     text-align: center;
     padding: 20px 0;
 }
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+textarea {
+  font-size: 16px;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0; /* Убирает скругления в Safari */
+}
