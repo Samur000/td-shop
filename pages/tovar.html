@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
+    <link rel="stylesheet" href="../hamid.css">
+    <title>Просмотр товара</title>
+    <style>
+        /* Добавим стили OZON */
+        .product-container {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .product-gallery {
+            width: 50%;
+            padding-right: 20px;
+        }
+
+        .product-info {
+            width: 50%;
+            padding-left: 20px;
+        }
+
+        .product-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #222;
+        }
+
+        .product-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .product-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: #185bcf;
+            margin-bottom: 20px;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .buy-btn {
+            background: #185bcf;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .buy-btn:hover {
+            background: #fff;
+            color: #185bcf;
+            border: 1px solid #185bcf;
+        }
+
+        .add-to-cart-btn {
+            background: white;
+            color: #185bcf;
+            border: 1px solid #185bcf;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .add-to-cart-btn:hover {
+            background: #185bcf;
+            color: #fff;
+        }
+
+        .product-tabs {
+            margin-top: 30px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            color: #185bcf;
+        }
+
+        .tab-btn.active:after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #185bcf;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .specs-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .specs-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .specs-table td:first-child {
+            width: 40%;
+            color: #666;
+        }
+
+        .features-list {
+            list-style: none;
+        }
+
+        .features-list li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .features-list li:before {
+            content: '✓';
+            color: #00a046;
+            position: absolute;
+            left: 0;
+        }
+
+        .delivery-info {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .delivery-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .delivery-icon {
+            margin-right: 10px;
+            color: #00a046;
+        }
+
+        @media (max-width: 768px) {
+            .product-container {
+                flex-direction: column;
+            }
+
+            .product-gallery,
+            .product-info {
+                width: 100%;
+                padding: 0;
+            }
+
+            .product-gallery {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a class="logo" href="../index.html">TD SHOP</a>
+        <div class="basket">
+            <button id="basket-btn">
+                <img src="https://cdn-icons-png.flaticon.com/512/1374/1374128.png" alt="Корзина">
+                <span class="basket-counter">0</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="product-container">
+        <div class="product-gallery">
+            <div class="slider-container">
+                <div class="slider" id="product-slider">
+                    <!-- Слайды будут добавлены через JS -->
+                </div>
+                <button class="slider-prev">❮</button>
+                <button class="slider-next">❯</button>
+                <div class="slider-dots" id="slider-dots">
+                    <!-- Точки слайдера будут добавлены через JS -->
+                </div>
+            </div>
+        </div>
+
+        <div class="product-info">
+            <h1 class="product-title" id="product-title"></h1>
+            <div class="product-subtitle" id="product-subtitle"></div>
+            <div class="product-price" id="product-price"></div>
+
+            <div class="product-actions">
+                <button class="buy-btn" id="buy-now-btn">Купить сейчас</button>
+                <button class="add-to-cart-btn" id="add-to-cart-btn">Добавить в корзину</button>
+            </div>
+
+            <div class="delivery-info">
+                <div class="delivery-row">
+                    <span class="delivery-icon">🚚</span>
+                    <span>Доставка завтра - 199 ₽</span>
+                </div>
+                <div class="delivery-row">
+                    <span class="delivery-icon">🏪</span>
+                    <span>Самовывоз из 5 пунктов - бесплатно</span>
+                </div>
+            </div>
+
+            <div class="product-tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="specs">Характеристики</button>
+                    <button class="tab-btn" data-tab="description">Описание</button>
+                    <button class="tab-btn" data-tab="reviews">Отзывы</button>
+                </div>
+
+                <div class="tab-content active" id="specs-tab">
+                    <table class="specs-table" id="specs-table">
+                        <!-- Характеристики будут добавлены через JS -->
+                    </table>
+                </div>
+
+                <div class="tab-content" id="description-tab">
+                    <p id="product-description"></p>
+                    <ul class="features-list" id="features-list">
+                        <!-- Особенности будут добавлены через JS -->
+                    </ul>
+                </div>
+
+                <div class="tab-content" id="reviews-tab">
+                    <div class="reviews-container" id="reviews-container">
+                        <!-- Отзывы будут добавлены через JS -->
+                    </div>
+
+                    <div class="add-review">
+                        <div class="add-review-title">Оставить отзыв</div>
+                        <form class="review-form">
+                            <div class="star-rating" id="rating-input">
+                                <span class="star" data-rating="1">★</span>
+                                <span class="star" data-rating="2">★</span>
+                                <span class="star" data-rating="3">★</span>
+                                <span class="star" data-rating="4">★</span>
+                                <span class="star" data-rating="5">★</span>
+                            </div>
+                            <textarea placeholder="Ваш отзыв..." required></textarea>
+                            <button type="submit" class="submit-review">Отправить отзыв</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../data.js"></script>
+    <script src="../basket.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Получаем ID товара из URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (!productId) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Загружаем товары из Local Storage или данных по умолчанию
+            window.myTovars = JSON.parse(localStorage.getItem('tovars')) || [...window.tovars];
+
+            // Находим товар
+            const product = window.myTovars.find(item => item.id === productId);
+
+            if (!product) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Заполняем основную информацию
+            document.getElementById('product-title').textContent = product.title;
+            document.getElementById('product-subtitle').textContent = product.subtitle;
+            document.getElementById('product-price').textContent = product.price + ' ₽';
+
+            if (product.description) {
+                document.getElementById('product-description').textContent = product.description;
+            }
+
+            // Заполняем характеристики
+            if (product.specifications) {
+                const specsTable = document.getElementById('specs-table');
+                for (const [key, value] of Object.entries(product.specifications)) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${key}</td><td>${value}</td>`;
+                    specsTable.appendChild(row);
+                }
+            }
+
+            // Заполняем особенности
+            if (product.features) {
+                const featuresList = document.getElementById('features-list');
+                product.features.forEach(feature => {
+                    const li = document.createElement('li');
+                    li.textContent = feature;
+                    featuresList.appendChild(li);
+                });
+            }
+
+            // Инициализация слайдера изображений
+            const imgUrls = product.imgUrl.split(",");
+            const slider = document.getElementById('product-slider');
+            const dotsContainer = document.getElementById('slider-dots');
+
+            imgUrls.forEach((url, index) => {
+                // Добавляем слайд
+                const slide = document.createElement('img');
+                slide.src = url;
+                slide.alt = product.title;
+                slide.className = 'slide';
+                slider.appendChild(slide);
+
+                // Добавляем точку для слайда
+                const dot = document.createElement('span');
+                dot.className = `dot ${index === 0 ? 'active' : ''}`;
+                dot.dataset.index = index;
+                dotsContainer.appendChild(dot);
+            });
+
+            // Инициализация слайдера
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            const prevBtn = document.querySelector('.slider-prev');
+            const nextBtn = document.querySelector('.slider-next');
+
+            const updateSlider = () => {
+                slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentSlide);
+                });
+            };
+
+            if (slides.length > 1) {
+                nextBtn.addEventListener('click', () => {
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    updateSlider();
+                });
+
+                prevBtn.addEventListener('click', () => {
+                    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                    updateSlider();
+                });
+
+                dots.forEach((dot, i) => {
+                    dot.addEventListener('click', () => {
+                        currentSlide = i;
+                        updateSlider();
+                    });
+                });
+            } else {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                dotsContainer.style.display = 'none';
+            }
+
+            // Табы
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    button.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+
+            // Обработчик кликов по звездам
+            document.addEventListener('click', function (e) {
+                if (e.target.classList.contains('star') && e.target.closest('#rating-input')) {
+                    const stars = e.target.parentElement.querySelectorAll('.star');
+                    const rating = parseInt(e.target.getAttribute('data-rating'));
+
+                    stars.forEach((star, i) => {
+                        if (i < rating) {
+                            star.classList.add('filled');
+                        } else {
+                            star.classList.remove('filled');
+                        }
+                    });
+                }
+            });
+
+            // Обработчик отправки формы отзыва
+            document.addEventListener('submit', function (e) {
+                if (e.target.classList.contains('review-form')) {
+                    e.preventDefault();
+
+                    const form = e.target;
+                    const rating = form.querySelectorAll('.star.filled').length;
+                    const text = form.querySelector('textarea').value.trim();
+
+                    if (rating === 0) {
+                        alert('Пожалуйста, поставьте оценку');
+                        return;
+                    }
+
+                    if (!text) {
+                        alert('Пожалуйста, напишите отзыв');
+                        return;
+                    }
+
+                    // Находим индекс товара в массиве
+                    const index = window.myTovars.findIndex(tovar => tovar.id === productId);
+
+                    // Добавляем новый отзыв
+                    const newReview = {
+                        author: "Вы",
+                        date: new Date().toLocaleDateString(),
+                        rating: rating,
+                        text: text
+                    };
+
+                    // Обновляем отзывы товара
+                    if (!window.myTovars[index].reviews) {
+                        window.myTovars[index].reviews = [];
+                    }
+                    window.myTovars[index].reviews.unshift(newReview);
+
+                    // Сохраняем в Local Storage
+                    localStorage.setItem('tovars', JSON.stringify(window.myTovars));
+
+                    // Обновляем отзывы на странице
+                    renderReviews();
+
+                    // Очищаем форму
+                    form.querySelector('textarea').value = '';
+                    const stars = form.querySelectorAll('.star');
+                    stars.forEach(star => star.classList.remove('filled'));
+
+                    alert('Спасибо за ваш отзыв!');
+                }
+            });
+
+            // Функция для отображения отзывов
+            function renderReviews() {
+                const reviewsContainer = document.getElementById('reviews-container');
+
+                if (!product.reviews || product.reviews.length === 0) {
+                    reviewsContainer.innerHTML = '<div class="no-reviews">Пока нет отзывов. Будьте первым!</div>';
+                    return;
+                }
+
+                reviewsContainer.innerHTML = product.reviews.map(review => `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <span class="review-author">${review.author || 'Аноним'}</span>
+                            <span class="review-date">${review.date || new Date().toLocaleDateString()}</span>
+                        </div>
+                        <div class="star-rating">
+                            ${Array(5).fill('').map((_, i) =>
+                    `<span class="star ${i < review.rating ? 'filled' : ''}">★</span>`
+                ).join('')}
+                        </div>
+                        <div class="review-text">${review.text}</div>
+                    </div>
+                `).join('');
+            }
+
+            // Первоначальная отрисовка отзывов
+            renderReviews();
+
+            // Обработчики кнопок покупки
+            document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+                addProductToBasket(productId);
+                alert('Товар добавлен в корзину!');
+            });
+
+            document.getElementById('buy-now-btn').addEventListener('click', () => {
+                addProductToBasket(productId);
+                // Здесь можно добавить переход на страницу оформления заказа
+                alert('Товар добавлен в корзину! Переход к оформлению...');
+            });
+        });
+    </script>
+</body>
+
+</html>

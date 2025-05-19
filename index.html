@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
+    <link rel="stylesheet" href="hamid.css">
+    <title>TD SHOP</title>
+</head>
+
+<body>
+    <header>
+        <a class="logo" href="#!">TD SHOP</a>
+        </div>
+        <div class="basket">
+            <button id="basket-btn">
+                <img src="https://cdn-icons-png.flaticon.com/512/1374/1374128.png" alt="Корзина">
+                <span class="basket-counter">0</span>
+            </button>
+        </div>
+    </header>
+
+    <section class="cards">
+        <!-- Карточки товаров будут добавляться через JS -->
+    </section>
+
+    <div class="modal-basket" id="modal-basket">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Корзина</h2>
+                <div class="close-modal">&times;</div>
+            </div>
+
+            <div class="modal-body">
+                <div class="basket-empty">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png" alt="Корзина пуста">
+                    <p>Ваша корзина пуста</p>
+                </div>
+
+                <div class="basket-items">
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <div onclick="" class="basket-total">
+                <span>Итого:</span>
+                <span class="total-price">0 ₽</span>
+            </div>
+            <button class="checkout-btn">Перейти к оформлению</button>
+        </div>
+    </div>
+
+    <div class="update-modal-overlay">
+        <!-- <div class="update-modal">
+            <button data-inp="closed">X</button>
+            <img src="ссылка на изображение" alt="">
+            <input id="upd-url" type="text" value="ссылка на изображение">
+            <input id="upd-title" type="text" value="название">
+            <input id="upd-subtitle" type="text" value="описание">
+            <input id="upd-price" type="text" value="цена">
+            <div>
+                <button data-inp="apply">Прнннименить</button>
+                <button data-inp="cancel">Отмена</button>
+            </div>
+        </div> -->
+    </div>
+    <div class="add-card">
+        <div>
+            <input required data-name="title" placeholder="Название" type="text"><br>
+            <input required data-name="subtitle" placeholder="Описание" type="text"><br>
+            <input required data-name="imgUrl" placeholder="Картина" type="text"><br>
+            <input required data-name="price" placeholder="Цена" type="text"><br>
+            <input required data-name="id" placeholder="id" type="text"><br>
+            <button data-name="addbtn" id="add-card-btn">Добавить</button>
+        </div>
+    </div>
+
+    <script>
+    // Получаем элементы DOM
+        const basketBtn = document.getElementById('basket-btn');
+        const modalBasket = document.getElementById('modal-basket');
+        const closeModalBtn = document.querySelector('.close-modal');
+
+        // Функция для открытия модального окна
+        function openBasketModal() {
+            modalBasket.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Блокируем скролл страницы
+        }
+
+        // Функция для закрытия модального окна
+        function closeBasketModal() {
+            modalBasket.classList.remove('active');
+            document.body.style.overflow = ''; // Восстанавливаем скролл страницы
+        }
+
+        // Обработчики событий
+        basketBtn.addEventListener('click', openBasketModal);
+        closeModalBtn.addEventListener('click', closeBasketModal);
+
+        // Закрытие при клике вне модального окна
+        modalBasket.addEventListener('click', (e) => {
+            if (e.target === modalBasket) {
+                closeBasketModal();
+            }
+        });
+
+        // Закрытие по клавише Esc
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalBasket.classList.contains('active')) {
+                closeBasketModal();
+            }
+        });</script>
+    <script src='data.js'></script>
+    <script src='basket.js'></script>
+    <script src='app.js'></script>
+    <script src='modalUpdate.js'></script>
+</body>
+
+</html>
